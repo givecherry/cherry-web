@@ -75,11 +75,6 @@ class MyApp extends PolymerElement {
         }
       </style>
 
-      <firebase-app auth-domain="givecherry-app.firebaseapp.com"
-        database-url="https://givecherry-app.firebaseio.com"
-        api-key="AIzaSyCFEdd5K0ueU3Lfjb_pzbtSvW1qeJeO0ys"></firebase-app>
-      <firebase-auth id="auth" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
-
       <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
       </app-location>
 
@@ -91,11 +86,10 @@ class MyApp extends PolymerElement {
         <app-header slot="header" condenses="" reveals="" effects="waterfall">
           <app-toolbar>
             <div main-title="">Cherry</div>
-            <paper-icon-button icon="my-icons:account-circle" on-tap="__login"></paper-icon-button>
-            <div>[[user.Q.displayName]]</div>
+            <paper-icon-button icon="my-icons:account-circle" on-tap="_login"></paper-icon-button>
+            <div>[[user.displayName]]</div>
           </app-toolbar>
         </app-header>
-        [[user]]
         <iron-pages selected="[[page]]" attr-for-selected="name" role="main">
           <my-view1 name="view1"></my-view1>
           <my-view2 name="view2"></my-view2>
@@ -170,12 +164,12 @@ class MyApp extends PolymerElement {
   _login(){
     var provider = new firebase.auth.GoogleAuthProvider();
     var user = firebase.auth().currentUser;
-    firebase.auth().signInWithPopup(provider).then(function(result) {
+    firebase.auth().signInWithPopup(provider).then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
       // The signed-in user info.
-      var user = result.user;
-
+      this.user = result.user;
+      console.log(this.user, this.user.displayName)
       // ...
     }).catch(function(error) {
       // Handle Errors here.
@@ -189,9 +183,6 @@ class MyApp extends PolymerElement {
     });
   }
 
-  __login(){
-    this.$.signInWithPopup()
-  }
 }
 
 window.customElements.define('my-app', MyApp);
